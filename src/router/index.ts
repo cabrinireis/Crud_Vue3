@@ -1,3 +1,4 @@
+import { susStore } from '@/stores'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -25,6 +26,14 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const store = susStore()
+  if (to.name !== 'login' && !store.isAuthenticated) next({ name: 'login' })
+  // if the user is not authenticated, `next` is called twice
+  next()
+  // explicitly return false to cancel the navigation
 })
 
 export default router

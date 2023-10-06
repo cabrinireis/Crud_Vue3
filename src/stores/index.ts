@@ -11,7 +11,8 @@ export const susStore = defineStore('sus', {
       active: false,
       text: 'Exemple',
       type: 'error'
-    }
+    },
+    isAuthenticated: false as boolean
   }),
   // getters: {
   //   doubleCount: (state) => state.count * 2
@@ -24,6 +25,7 @@ export const susStore = defineStore('sus', {
           if (res) {
             router.push('/list')
             this.user = value.user
+            this.isAuthenticated = true
           }
         })
         .catch((error) => {
