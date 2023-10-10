@@ -26,6 +26,7 @@ export const susStore = defineStore('sus', {
             router.push('/list')
             this.user = value.user
             this.isAuthenticated = true
+            sessionStorage.setItem('isAuthenticated', JSON.stringify(this.user))
           }
         })
         .catch((error) => {

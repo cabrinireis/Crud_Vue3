@@ -29,8 +29,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const store = susStore()
-  if (to.name !== 'login' && !store.isAuthenticated) next({ name: 'login' })
+  const user = sessionStorage.getItem('isAuthenticated')
+  if (to.name !== 'login' && !user) next({ name: 'login' })
   // if the user is not authenticated, `next` is called twice
   next()
   // explicitly return false to cancel the navigation
