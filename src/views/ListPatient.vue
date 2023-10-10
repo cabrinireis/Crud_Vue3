@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import appForm from '@/components/FormPatient.vue'
+import { susStore } from '@/stores'
+const store = susStore()
 interface DataTableHeader {
   title: string
   key: string
@@ -20,19 +22,17 @@ const header: DataTableHeader[] = reactive([
   { title: 'Ações', key: 'actions' }
 ])
 
-const dataBody: Ref<TypeDataBody[]> = ref([
-  {
-    name: 'Fulana',
-    motherName: 'Mae da fulana',
-    phone: 1111111111,
-    actions: 'mdi-pencil'
-  }
-])
+const dataBody: Ref<TypeDataBody[]> = ref([])
 
 const dialogActive = ref<boolean>(false)
 function openModal() {
   dialogActive.value = !dialogActive.value
 }
+
+onMounted(async () => {
+  await store.getPatient('')
+  dataBody.value = store.patientList
+})
 </script>
 <template>
   <v-container>
@@ -66,7 +66,7 @@ function openModal() {
               <td>{{ item.motherName }}</td>
               <td>{{ item.phone }}</td>
               <td>
-                <v-icon @click="openModal">{{ item.actions }}</v-icon>
+                <v-icon @click="openModal">mdi-pencil</v-icon>
               </td>
             </tr>
           </tbody>

@@ -10,4 +10,14 @@ export default function routes() {
       return new Response(400, { some: 'header' }, { errors: ['name cannot be blank'] })
     }
   })
+
+  this.get('/patients', function (schema, request) {
+    const query = request.queryParams.query
+    const data = schema.patients.all()
+    let filter = data.filter((q) => {
+      return q.name.toLowerCase().includes(query)
+    })
+
+    return query ? filter : schema.patients.all()
+  })
 }

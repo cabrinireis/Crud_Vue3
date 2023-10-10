@@ -31,6 +31,24 @@ export const susStore = defineStore('sus', {
         .catch((error) => {
           console.log(error)
         })
+    },
+    async getPatient(state: string | '') {
+      let url = '/api/patients'
+      const params = {
+        query: state
+      }
+      const urlPaarams =
+        state !== undefined ? (url += '?' + new URLSearchParams(params).toString()) : url
+      await axios
+        .get(urlPaarams)
+        .then((response) => {
+          this.patientList = response.data.patients
+          // const res = JSON.parse(response._bodyText)
+          // this.patientList = res
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 })
