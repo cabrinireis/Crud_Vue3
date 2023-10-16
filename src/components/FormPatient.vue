@@ -5,7 +5,7 @@ interface typeForm {
   src: string
   name: string
   motherName: string
-  photo_url: any
+  photo_url: string
   cep: string
   cpf: string
   birthday: string
@@ -16,6 +16,7 @@ interface typeForm {
     addr: string
   }
 }
+
 const props = defineProps({
   dataform: Object,
   mode: {
@@ -23,17 +24,19 @@ const props = defineProps({
     default: 'read'
   }
 })
-const filter: any = {
+const filter = {
   edit: 'Editar Paciente',
   remove: 'Excluir Paciente',
-  new: 'Cadastrar novo Paciente'
+  new: 'Cadastrar novo Paciente',
+  read: 'Detalhes do Paciente'
 }
 const readonly = computed(() => {
   console.log(props.mode)
   return props.mode === 'read'
 })
+
 const setTitle = computed(() => {
-  return filter?.[props.mode] || filter.value?.['new']
+  return filter[props.mode as keyof typeof filter]
 })
 
 const form = ref<typeForm>({
@@ -41,7 +44,7 @@ const form = ref<typeForm>({
   src: '',
   name: '',
   motherName: '',
-  photo_url: null,
+  photo_url: '',
   cep: '',
   cpf: '',
   birthday: '',
