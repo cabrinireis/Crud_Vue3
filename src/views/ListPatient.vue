@@ -126,7 +126,7 @@ watch(search, (value: string) => {
       </v-col>
     </v-row>
     <v-row>
-      <v-dialog v-if="dialogActive" v-model="dialogActive" width="600" scrollable>
+      <v-dialog v-if="dialogActive" v-model="dialogActive" width="800" scrollable>
         <appForm :data-form="store.patientId" :mode="mode" @close="dialogActive = false" />
       </v-dialog>
     </v-row>
