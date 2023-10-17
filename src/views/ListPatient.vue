@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, watch, computed } from 'vue'
 import type { Ref } from 'vue'
 import appForm from '@/components/FormPatient.vue'
 import { susStore } from '@/stores'
+import type { PropType } from 'vue'
 const store = susStore()
 interface DataTableHeader {
   title: string
@@ -23,10 +24,18 @@ const header: DataTableHeader[] = reactive([
   { title: 'Ações', key: 'actions' }
 ])
 
-const dataBody: Ref<TypeDataBody[]> = ref([])
+const loading: Ref<boolean> = ref(false)
 
 const dialogActive = ref<boolean>(false)
+
+const search = ref<string>('')
+
 const mode = ref<string>('')
+
+const list = computed<TypeDataBody[]>(() => {
+  return store.patientList
+})
+
 function openModal(typeMode: string) {
   dialogActive.value = !dialogActive.value
   mode.value = typeMode
@@ -52,8 +61,12 @@ const onDelete = (mode: string) => {
 }
 
 onMounted(async () => {
-  await store.getPatients('')
-  dataBody.value = store.patientList
+  await store.getPatients('car')
+})
+
+watch(search, (value: string) => {
+  store.setSearch(value)
+  store.getPatients(value)
 })
 </script>
 <template>
@@ -64,6 +77,7 @@ onMounted(async () => {
       </v-col>
       <v-col cols="6">
         <v-text-field
+          v-model="search"
           class="input-search"
           flat
           appendIcon="mdi-magnify"
@@ -79,11 +93,16 @@ onMounted(async () => {
         <v-table>
           <thead>
             <tr>
-              <th v-for="(item, i) in header" :key="i" class="text-left">{{ item.title }}</th>
+              <th v-for="(item, i) in header" :key="i" class="text-left w-25">{{ item.title }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, i) in dataBody" :key="i">
+            <tr v-if="loading">
+              <td colspan="4" class="h-auto">
+                <v-progress-linear :indeterminate="loading"></v-progress-linear>
+              </td>
+            </tr>
+            <tr v-else v-for="(item, i) in list" :key="i">
               <td>{{ item.name }}</td>
               <td>{{ item.motherName }}</td>
               <td>{{ item.phone }}</td>

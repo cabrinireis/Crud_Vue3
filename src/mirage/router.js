@@ -13,12 +13,12 @@ export default function routes() {
 
   this.get('/patients', function (schema, request) {
     const query = request.queryParams.query
-    const data = schema.patients.all()
-    let filter = data.filter((q) => {
-      return q.name.toLowerCase().includes(query)
+    const dados = schema.patients.all()
+    let filter = dados.models.filter((q) => {
+      console.log(q.name.toLowerCase(), query)
+      return q.name.toLowerCase().includes(query.toLowerCase())
     })
-
-    return query ? filter : schema.patients.all()
+    return filter
   })
 
   this.get('/patients/:id', function (schema, request) {

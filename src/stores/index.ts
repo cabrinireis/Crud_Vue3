@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router/index'
-let url = '/api/patients'
+const url = '/api/patients'
 export const susStore = defineStore('sus', {
   state: () => ({
     modalActive: false,
@@ -29,6 +29,7 @@ export const susStore = defineStore('sus', {
       text: 'Exemple',
       type: 'error'
     },
+    search: '' as string,
     isAuthenticated: false as boolean
   }),
   // getters: {
@@ -50,16 +51,11 @@ export const susStore = defineStore('sus', {
           console.log(error)
         })
     },
-    async getPatients(state: string | '') {
-      const params = {
-        query: state
-      }
-      const urlPaarams =
-        state !== undefined ? (url += '?' + new URLSearchParams(params).toString()) : url
+    async getPatients(state: string) {
       await axios
-        .get(urlPaarams)
+        .get(url, { params: { query: this.search } })
         .then((response) => {
-          this.patientList = response.data.patients
+          this.patientList = response.data
           // const res = JSON.parse(response._bodyText)
           // this.patientList = res
         })
@@ -74,6 +70,9 @@ export const susStore = defineStore('sus', {
           this.patient = res.data.patient
         })
         .catch((error) => console.log(error))
+    },
+    setSearch(value: string | '') {
+      this.search = value
     }
   },
   getters: {
