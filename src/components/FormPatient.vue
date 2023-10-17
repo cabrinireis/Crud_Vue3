@@ -37,7 +37,8 @@ const readonly = computed(() => {
 const setTitle = computed(() => {
   return filter[props.mode as keyof typeof filter]
 })
-
+const image = ref<File[]>([])
+const file = ref()
 const form = ref<typeForm>({
   cns: '',
   src: '',
@@ -54,7 +55,11 @@ const form = ref<typeForm>({
     addr: ''
   }
 })
-
+const Preview_image = () => {
+  console.log(image.value)
+  const img = image.value[0] as Blob | MediaSource
+  form.value.photo_url = URL.createObjectURL(img)
+}
 onMounted(async () => {
   if (props.dataForm) {
     form.value = { ...props.dataForm }
@@ -76,8 +81,15 @@ onMounted(async () => {
             <v-img :src="form.photo_url" width="100%" height="300px" class="preview"> </v-img>
             <span class="text-left red--text ml-4"> Foto obrigatória </span>
             <div class="upload" v-if="mode !== 'read'">
-              <v-btn color="secondary" block>Adicionar Foto</v-btn>
-              <v-file-input ref="file" v-show="false" hide-details> </v-file-input>
+              <v-btn color="secondary" block @click="file.click()">Adicionar Foto</v-btn>
+              <v-file-input
+                v-model="image"
+                ref="file"
+                v-show="false"
+                hide-details
+                @change="Preview_image"
+              >
+              </v-file-input>
             </div>
           </v-col>
           <v-col cols="6">
