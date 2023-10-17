@@ -18,7 +18,7 @@ import { RouterView } from 'vue-router'
       </v-btn>
     </v-app-bar>
 
-    <v-main class="d-flex align-center justify-center" style="min-height: calc(100vh - 64px)">
+    <v-main style="min-height: calc(100vh - 64px)">
       <router-view />
     </v-main>
   </v-layout>

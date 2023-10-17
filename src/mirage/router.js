@@ -15,10 +15,9 @@ export default function routes() {
     const query = request.queryParams.query
     const dados = schema.patients.all()
     let filter = dados.models.filter((q) => {
-      console.log(q.name.toLowerCase(), query)
       return q.name.toLowerCase().includes(query.toLowerCase())
     })
-    return filter
+    return new Response(200, { some: 'header' }, { response: filter })
   })
 
   this.get('/patients/:id', function (schema, request) {

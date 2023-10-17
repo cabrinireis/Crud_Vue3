@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, watch, computed } from 'vue'
-import type { Ref } from 'vue'
 import appForm from '@/components/FormPatient.vue'
 import { susStore } from '@/stores'
-import type { PropType } from 'vue'
 const store = susStore()
 interface DataTableHeader {
   title: string
@@ -24,16 +22,18 @@ const header: DataTableHeader[] = reactive([
   { title: 'Ações', key: 'actions' }
 ])
 
-const loading: Ref<boolean> = ref(false)
-
 const dialogActive = ref<boolean>(false)
 
 const search = ref<string>('')
+const awaitingSearch = ref<boolean>(false)
 
 const mode = ref<string>('')
 
 const list = computed<TypeDataBody[]>(() => {
   return store.patientList
+})
+const onLoading = computed(() => {
+  return store.loading
 })
 
 function openModal(typeMode: string) {
@@ -61,12 +61,18 @@ const onDelete = (mode: string) => {
 }
 
 onMounted(async () => {
-  await store.getPatients('car')
+  await store.getPatients()
 })
 
 watch(search, (value: string) => {
   store.setSearch(value)
-  store.getPatients(value)
+  if (!awaitingSearch.value) {
+    setTimeout(() => {
+      store.getPatients()
+      awaitingSearch.value = false
+    }, 2000)
+  }
+  awaitingSearch.value = true
 })
 </script>
 <template>
@@ -80,7 +86,7 @@ watch(search, (value: string) => {
           v-model="search"
           class="input-search"
           flat
-          appendIcon="mdi-magnify"
+          prependInnerIcon="mdi-magnify"
           label="Buscar..."
           hide-details
           single-line
@@ -97,9 +103,9 @@ watch(search, (value: string) => {
             </tr>
           </thead>
           <tbody>
-            <tr v-if="loading">
+            <tr v-if="onLoading">
               <td colspan="4" class="h-auto">
-                <v-progress-linear :indeterminate="loading"></v-progress-linear>
+                <v-progress-linear :indeterminate="onLoading"></v-progress-linear>
               </td>
             </tr>
             <tr v-else v-for="(item, i) in list" :key="i">

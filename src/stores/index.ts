@@ -30,11 +30,9 @@ export const susStore = defineStore('sus', {
       type: 'error'
     },
     search: '' as string,
+    loading: false as boolean,
     isAuthenticated: false as boolean
   }),
-  // getters: {
-  //   doubleCount: (state) => state.count * 2
-  // },
   actions: {
     async login(value: { user: string; pass: string }) {
       await axios
@@ -51,16 +49,18 @@ export const susStore = defineStore('sus', {
           console.log(error)
         })
     },
-    async getPatients(state: string) {
+    async getPatients() {
+      this.loading = true
       await axios
         .get(url, { params: { query: this.search } })
-        .then((response) => {
-          this.patientList = response.data
-          // const res = JSON.parse(response._bodyText)
-          // this.patientList = res
+        .then(({ data }) => {
+          this.patientList = data.response
         })
         .catch((error) => {
           console.log(error)
+        })
+        .finally(() => {
+          this.loading = false
         })
     },
     async getPatient(id: string) {
