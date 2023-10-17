@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { onMounted } from 'vue'
-import { defineProps, ref, computed } from 'vue'
+import { defineProps, ref, computed, watch } from 'vue'
+import { susStore } from '@/stores'
+const store = susStore()
 interface typeForm {
   cns: string
   src: string
@@ -37,6 +39,7 @@ const readonly = computed(() => {
 const setTitle = computed(() => {
   return filter[props.mode as keyof typeof filter]
 })
+
 const image = ref<File[]>([])
 const file = ref()
 const form = ref<typeForm>({
@@ -60,11 +63,27 @@ const Preview_image = () => {
   const img = image.value[0] as Blob | MediaSource
   form.value.photo_url = URL.createObjectURL(img)
 }
+
+const getCep = async (cep: string) => {
+  await store.getCep(cep)
+  form.value.adress = store.adress
+}
+
 onMounted(async () => {
   if (props.dataForm) {
     form.value = { ...props.dataForm }
   }
 })
+
+watch(
+  () => form.value.cep,
+  (cep) => {
+    form.value.cep = cep.replace(/\D/g, '').replace(/^(\d{5})(\d{3})+?$/, '$1-$2')
+    if (cep.length === 9) {
+      getCep(cep)
+    }
+  }
+)
 </script>
 <template>
   <v-card>
@@ -156,7 +175,6 @@ onMounted(async () => {
               v-model="form.cep"
               dense
               max-leng
-              v-mask="'#####-###'"
               outlined
               :readonly="readonly"
             ></v-text-field>

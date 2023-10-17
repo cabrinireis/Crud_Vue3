@@ -25,4 +25,6 @@ export default function routes() {
     const patient = schema.patients.find(id)
     return patient
   })
+
+  this.passthrough('https://viacep.com.br/ws/**')
 }

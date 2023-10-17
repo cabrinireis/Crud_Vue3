@@ -6,6 +6,7 @@ export const susStore = defineStore('sus', {
   state: () => ({
     modalActive: false,
     patientList: [],
+    fullCep: {} as object,
     patient: {
       cns: '',
       src: '',
@@ -23,7 +24,12 @@ export const susStore = defineStore('sus', {
       }
     },
     user: '' as string,
-    adress: null,
+    adress: {
+      city: '' as string,
+      state: '' as string,
+      ville: '' as string,
+      addr: '' as string
+    },
     notification: {
       active: false,
       text: 'Exemple',
@@ -82,6 +88,19 @@ export const susStore = defineStore('sus', {
         .catch((error) => {
           console.log(error)
         })
+    },
+    async getCep(cep: string) {
+      // axios not suport passthrough the miragejs
+      const baseUrl = 'https://viacep.com.br/ws/'
+      const url = `${baseUrl}${cep.replace(/\D/g, '')}/json/`
+      const response = await fetch(url)
+      const { localidade, uf, bairro, logradouro } = await response.json()
+      this.adress = {
+        city: localidade,
+        state: uf,
+        ville: bairro,
+        addr: logradouro
+      }
     },
     setSearch(value: string | '') {
       this.search = value
