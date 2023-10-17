@@ -71,6 +71,18 @@ export const susStore = defineStore('sus', {
         })
         .catch((error) => console.log(error))
     },
+    async createPatient(value: object) {
+      await axios
+        .post('/api/patients/', value)
+        .then((res) => {
+          if (res) {
+            console.log(res)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
     setSearch(value: string | '') {
       this.search = value
     }
