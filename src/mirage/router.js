@@ -20,4 +20,10 @@ export default function routes() {
 
     return query ? filter : schema.patients.all()
   })
+
+  this.get('/patients/:id', function (schema, request) {
+    const id = request.params.id
+    const patient = schema.patients.find(id)
+    return patient
+  })
 }

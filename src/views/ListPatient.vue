@@ -13,6 +13,7 @@ interface TypeDataBody {
   motherName: string
   phone: number
   actions: string
+  id: string
 }
 
 const header: DataTableHeader[] = reactive([
@@ -25,12 +26,33 @@ const header: DataTableHeader[] = reactive([
 const dataBody: Ref<TypeDataBody[]> = ref([])
 
 const dialogActive = ref<boolean>(false)
-function openModal() {
+const mode = ref<string>('')
+function openModal(typeMode: string) {
   dialogActive.value = !dialogActive.value
+  mode.value = typeMode
+}
+
+const onGetPatient = async (id: string, mode: string) => {
+  try {
+    await store.getPatient(id)
+    openModal(mode)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const onUpdate = (id: string, mode: string) => {
+  onGetPatient(id, mode)
+}
+const onRead = (id: string, mode: string) => {
+  onGetPatient(id, mode)
+}
+const onDelete = (mode: string) => {
+  openModal(mode)
 }
 
 onMounted(async () => {
-  await store.getPatient('')
+  await store.getPatients('')
   dataBody.value = store.patientList
 })
 </script>
@@ -66,16 +88,19 @@ onMounted(async () => {
               <td>{{ item.motherName }}</td>
               <td>{{ item.phone }}</td>
               <td>
-                <v-icon @click="openModal">mdi-pencil</v-icon>
+                <v-icon @click="onUpdate(item.id, 'edit')">mdi-pencil</v-icon>
+                <v-icon class="ml-4" @click="onRead(item.id, 'read')">mdi-eye</v-icon>
+                <v-icon class="ml-4" @click="onDelete('remove')">mdi-delete</v-icon>
               </td>
             </tr>
           </tbody>
         </v-table>
       </v-col>
     </v-row>
-    <v-dialog v-if="dialogActive" v-model="dialogActive" width="800" persistent>
-      hello
-      <appForm />
-    </v-dialog>
+    <v-row>
+      <v-dialog v-if="dialogActive" v-model="dialogActive" width="600" scrollable>
+        <appForm :data-form="store.patientId" :mode="mode" @close="dialogActive = false" />
+      </v-dialog>
+    </v-row>
   </v-container>
 </template>

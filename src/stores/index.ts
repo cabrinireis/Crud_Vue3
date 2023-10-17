@@ -1,10 +1,27 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router/index'
+let url = '/api/patients'
 export const susStore = defineStore('sus', {
   state: () => ({
     modalActive: false,
     patientList: [],
+    patient: {
+      cns: '',
+      src: '',
+      name: '',
+      motherName: '',
+      photo_url: '',
+      cep: '',
+      cpf: '',
+      birthday: '',
+      adress: {
+        city: '',
+        state: '',
+        ville: '',
+        addr: ''
+      }
+    },
     user: '' as string,
     adress: null,
     notification: {
@@ -33,8 +50,7 @@ export const susStore = defineStore('sus', {
           console.log(error)
         })
     },
-    async getPatient(state: string | '') {
-      let url = '/api/patients'
+    async getPatients(state: string | '') {
       const params = {
         query: state
       }
@@ -50,6 +66,19 @@ export const susStore = defineStore('sus', {
         .catch((error) => {
           console.log(error)
         })
+    },
+    async getPatient(id: string) {
+      await axios
+        .get(`/api/patients/${id}`)
+        .then((res) => {
+          this.patient = res.data.patient
+        })
+        .catch((error) => console.log(error))
+    }
+  },
+  getters: {
+    patientId(state) {
+      return state.patient
     }
   }
 })
