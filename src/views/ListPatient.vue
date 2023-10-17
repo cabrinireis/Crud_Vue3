@@ -59,6 +59,9 @@ const onRead = (id: string, mode: string) => {
 const onDelete = (mode: string) => {
   openModal(mode)
 }
+const onCreate = () => {
+  openModal('new')
+}
 
 onMounted(async () => {
   await store.getPatients()
@@ -79,7 +82,7 @@ watch(search, (value: string) => {
   <v-container>
     <v-row justify="space-between">
       <v-col cols="4">
-        <v-btn color="secondary">Cadastrar</v-btn>
+        <v-btn color="secondary" @click="onCreate">Cadastrar</v-btn>
       </v-col>
       <v-col cols="6">
         <v-text-field
