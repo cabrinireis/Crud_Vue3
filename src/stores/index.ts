@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router/index'
 const url = '/api/patients'
+type notyType = 'success' | 'info' | 'warning' | 'error' | undefined
 export const susStore = defineStore('sus', {
   state: () => ({
     modalActive: false,
@@ -32,8 +33,8 @@ export const susStore = defineStore('sus', {
     },
     notification: {
       active: false,
-      text: 'Exemple',
-      type: 'error'
+      text: '',
+      type: 'a' as notyType
     },
     search: '' as string,
     loading: false as boolean,
@@ -95,6 +96,11 @@ export const susStore = defineStore('sus', {
         .then((res) => {
           if (res) {
             this.getPatients()
+            this.notification = {
+              type: 'success',
+              active: true,
+              text: 'Paciente Excluido com sucesso.'
+            }
           }
         })
         .catch((error) => {

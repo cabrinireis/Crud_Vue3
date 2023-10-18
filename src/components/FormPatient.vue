@@ -68,7 +68,6 @@ const Preview_image = () => {
 
 const action = () => {
   if (props.mode === 'edit') {
-    // edit
     store.updatePatient(form.value)
     emit('close')
   } else if (props.mode === 'remove') {
