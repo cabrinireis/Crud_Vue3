@@ -11,6 +11,18 @@ export default function routes() {
     }
   })
 
+  this.post('/patients/', function (schema, request) {
+    const data = JSON.parse(request.requestBody)
+    return schema.patients.create(data)
+  })
+
+  this.post(`/patients/:id`, function (schema, request) {
+    const id = request.params.id
+    const patient = schema.patients.find(id)
+    const body = JSON.parse(request.requestBody)
+    return patient.update(body.params)
+  })
+
   this.get('/patients', function (schema, request) {
     const query = request.queryParams.query
     const dados = schema.patients.all()
@@ -24,6 +36,12 @@ export default function routes() {
     const id = request.params.id
     const patient = schema.patients.find(id)
     return patient
+  })
+
+  this.delete(`/patients/:id`, function (schema, request) {
+    const id = request.params.id
+    const item = schema.patients.find(id)
+    return item.destroy()
   })
 
   this.passthrough('https://viacep.com.br/ws/**')

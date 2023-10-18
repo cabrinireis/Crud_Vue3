@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { PropType } from 'vue'
 import { onMounted } from 'vue'
 import { defineProps, ref, computed, watch } from 'vue'
 import { susStore } from '@/stores'
@@ -21,10 +20,13 @@ interface typeForm {
   }
 }
 
-const props = defineProps({
+const props = withDefaults(defineProps<{ mode: string; id: string; dataForm: typeForm }>(), {
   mode: String,
-  dataForm: Object as PropType<typeForm>
+  id: String,
+  dataForm: Object
 })
+
+const emit = defineEmits(['close'])
 
 const filter = {
   edit: 'Editar Paciente',
@@ -62,6 +64,20 @@ const Preview_image = () => {
   console.log(image.value)
   const img = image.value[0] as Blob | MediaSource
   form.value.photo_url = URL.createObjectURL(img)
+}
+
+const action = () => {
+  if (props.mode === 'edit') {
+    // edit
+    store.updatePatient(form.value)
+    emit('close')
+  } else if (props.mode === 'remove') {
+    store.deletePatient(props.id)
+    emit('close')
+  } else {
+    store.createPatient(form.value)
+    emit('close')
+  }
 }
 
 const getCep = async (cep: string) => {
@@ -228,7 +244,7 @@ watch(
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn id="app-btnCancel" color="error" @click="$emit('close')"> Cancelar </v-btn>
-      <v-btn :disabled="readonly" class="app-btnSave" color="error" light rounded>
+      <v-btn :disabled="readonly" class="app-btnSave" color="error" light rounded @click="action">
         {{ mode === 'remove' ? 'Excluir' : 'Salvar' }}
       </v-btn>
     </v-card-actions>

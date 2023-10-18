@@ -82,7 +82,31 @@ export const susStore = defineStore('sus', {
         .post('/api/patients/', value)
         .then((res) => {
           if (res) {
-            console.log(res)
+            this.getPatients()
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    async deletePatient(id: string) {
+      axios
+        .delete(`/api/patients/${id}`)
+        .then((res) => {
+          if (res) {
+            this.getPatients()
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    async updatePatient(value: object) {
+      await axios
+        .post(`/api/patients/${value.id}`, { params: value })
+        .then((res) => {
+          if (res) {
+            this.getPatients()
           }
         })
         .catch((error) => {

@@ -27,6 +27,7 @@ const dialogActive = ref<boolean>(false)
 const search = ref<string>('')
 const awaitingSearch = ref<boolean>(false)
 
+const patientId = ref<string>('')
 const mode = ref<string>('')
 
 const list = computed<TypeDataBody[]>(() => {
@@ -56,7 +57,8 @@ const onUpdate = (id: string, mode: string) => {
 const onRead = (id: string, mode: string) => {
   onGetPatient(id, mode)
 }
-const onDelete = (mode: string) => {
+const onDelete = (id: string, mode: string) => {
+  patientId.value = id
   openModal(mode)
 }
 const onCreate = () => {
@@ -118,7 +120,7 @@ watch(search, (value: string) => {
               <td>
                 <v-icon @click="onUpdate(item.id, 'edit')">mdi-pencil</v-icon>
                 <v-icon class="ml-4" @click="onRead(item.id, 'read')">mdi-eye</v-icon>
-                <v-icon class="ml-4" @click="onDelete('remove')">mdi-delete</v-icon>
+                <v-icon class="ml-4" @click="onDelete(item.id, 'remove')">mdi-delete</v-icon>
               </td>
             </tr>
           </tbody>
@@ -127,7 +129,12 @@ watch(search, (value: string) => {
     </v-row>
     <v-row>
       <v-dialog v-if="dialogActive" v-model="dialogActive" width="800" scrollable>
-        <appForm :data-form="store.patientId" :mode="mode" @close="dialogActive = false" />
+        <appForm
+          :data-form="store.patientId"
+          :mode="mode"
+          :id="patientId"
+          @close="dialogActive = false"
+        />
       </v-dialog>
     </v-row>
   </v-container>
