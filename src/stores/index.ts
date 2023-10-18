@@ -3,6 +3,11 @@ import axios from 'axios'
 import router from '@/router/index'
 const url = '/api/patients'
 type notyType = 'success' | 'info' | 'warning' | 'error' | undefined
+const setError = {
+  active: true,
+  text: 'Ocorreu um erro, tente novamente mais tarde.',
+  type: 'error' as notyType
+}
 export const susStore = defineStore('sus', {
   state: () => ({
     modalActive: false,
@@ -34,7 +39,7 @@ export const susStore = defineStore('sus', {
     notification: {
       active: false,
       text: '',
-      type: 'a' as notyType
+      type: '' as notyType
     },
     search: '' as string,
     loading: false as boolean,
@@ -50,6 +55,11 @@ export const susStore = defineStore('sus', {
             this.user = value.user
             this.isAuthenticated = true
             sessionStorage.setItem('isAuthenticated', JSON.stringify(this.user))
+            this.notification = {
+              type: 'success',
+              active: true,
+              text: 'Seja bem vindo(a).'
+            }
           }
         })
         .catch((error) => {
@@ -64,6 +74,7 @@ export const susStore = defineStore('sus', {
           this.patientList = data.response
         })
         .catch((error) => {
+          this.notification = { ...setError }
           console.log(error)
         })
         .finally(() => {
@@ -76,7 +87,10 @@ export const susStore = defineStore('sus', {
         .then((res) => {
           this.patient = res.data.patient
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          this.notification = { ...setError }
+          console.log(error)
+        })
     },
     async createPatient(value: object) {
       await axios
@@ -84,9 +98,15 @@ export const susStore = defineStore('sus', {
         .then((res) => {
           if (res) {
             this.getPatients()
+            this.notification = {
+              type: 'success',
+              active: true,
+              text: 'Paciente adicionado com sucesso.'
+            }
           }
         })
         .catch((error) => {
+          this.notification = { ...setError }
           console.log(error)
         })
     },
@@ -104,6 +124,7 @@ export const susStore = defineStore('sus', {
           }
         })
         .catch((error) => {
+          this.notification = { ...setError }
           console.log(error)
         })
     },
@@ -113,9 +134,15 @@ export const susStore = defineStore('sus', {
         .then((res) => {
           if (res) {
             this.getPatients()
+            this.notification = {
+              type: 'success',
+              active: true,
+              text: 'Paciente editado com sucesso.'
+            }
           }
         })
         .catch((error) => {
+          this.notification = { ...setError }
           console.log(error)
         })
     },
