@@ -1,13 +1,22 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router/index'
-const url = '/api/patients'
-type notyType = 'success' | 'info' | 'warning' | 'error' | undefined
+
 const setError = {
   active: true,
   text: 'Ocorreu um erro, tente novamente mais tarde.',
   type: 'error' as notyType
 }
+// axios.interceptors.response.use(function () {
+//   const errorCustom = (susStore().$state.notification = setError)
+//   // Any status codes that falls outside the range of 2xx cause this function to trigger
+//   // Do something with response error
+//   return Promise.reject(errorCustom)
+// })
+
+const url = '/api/patients'
+type notyType = 'success' | 'info' | 'warning' | 'error' | undefined
+
 export const susStore = defineStore('sus', {
   state: () => ({
     modalActive: false,
@@ -47,24 +56,19 @@ export const susStore = defineStore('sus', {
   }),
   actions: {
     async login(value: { user: string; pass: string }) {
-      await axios
-        .post('/api/login', value)
-        .then((res) => {
-          if (res) {
-            router.push('/list')
-            this.user = value.user
-            this.isAuthenticated = true
-            sessionStorage.setItem('isAuthenticated', JSON.stringify(this.user))
-            this.notification = {
-              type: 'success',
-              active: true,
-              text: 'Seja bem vindo(a).'
-            }
+      await axios.post('/api/login', value).then((res) => {
+        if (res) {
+          router.push('/list')
+          this.user = value.user
+          this.isAuthenticated = true
+          sessionStorage.setItem('isAuthenticated', JSON.stringify(this.user))
+          this.notification = {
+            type: 'success',
+            active: true,
+            text: 'Seja bem vindo(a).'
           }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+        }
+      })
     },
     async getPatients() {
       this.loading = true
@@ -111,22 +115,20 @@ export const susStore = defineStore('sus', {
         })
     },
     async deletePatient(id: string) {
-      axios
-        .delete(`/api/patients/${id}`)
-        .then((res) => {
-          if (res) {
-            this.getPatients()
-            this.notification = {
-              type: 'success',
-              active: true,
-              text: 'Paciente Excluido com sucesso.'
-            }
+      axios.delete(`/api/patients/${id}`).then((res) => {
+        if (res) {
+          this.getPatients()
+          this.notification = {
+            type: 'success',
+            active: true,
+            text: 'Paciente Excluido com sucesso.'
           }
-        })
-        .catch((error) => {
-          this.notification = { ...setError }
-          console.log(error)
-        })
+        }
+      })
+      // .catch((error) => {
+      //   this.notification = { ...setError }
+      //   console.log(error)
+      // })
     },
     async updatePatient(value: object) {
       await axios

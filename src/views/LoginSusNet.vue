@@ -24,13 +24,14 @@ const userRule = ref([
   },
   (value: string) => {
     if (value?.length <= 10) return true
+    // if (!value) return 'Pass is required'
     return 'Name must be less than 10 characters.'
   }
 ])
 const passRule = ref([
   (value: string) => {
     if (value) return true
-    return 'Pass is Required'
+    return 'Pass is required.'
   }
 ])
 </script>
@@ -43,7 +44,12 @@ const passRule = ref([
           <v-toolbar-title>Login SUSnet</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <v-form v-model="valid" validate-on="submit lazy" @submit.prevent="onSubmit(form)">
+          <v-form
+            v-model="valid"
+            data-test="submit"
+            validate-on="submit lazy"
+            @submit.prevent="onSubmit(form)"
+          >
             <v-text-field
               v-model="form.user"
               prepend-icon="mdi-account"
@@ -51,15 +57,19 @@ const passRule = ref([
               label="Usuário"
               :rules="userRule"
               type="text"
+              id="user"
+              data-test="user"
+              class="user"
               variant="underlined"
             ></v-text-field>
             <v-text-field
               v-model="form.pass"
-              id="password"
               prepend-icon="mdi-lock"
               name="password"
               label="Senha"
               :rules="passRule"
+              id="password"
+              data-test="password"
               type="password"
               variant="underlined"
             ></v-text-field>
