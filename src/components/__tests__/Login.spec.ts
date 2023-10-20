@@ -10,7 +10,6 @@ const vuetify = createVuetify({
   components,
   directives
 })
-
 global.ResizeObserver = require('resize-observer-polyfill')
 
 describe('HelloWorld', () => {
@@ -22,11 +21,28 @@ describe('HelloWorld', () => {
   })
   test('should fail when field empty', async () => {
     const btn = view.find('[data-test="submit"]')
-    view.find('#user').setValue('')
-    view.find('#password').setValue('')
+    await view.get('#user').setValue('')
+    await view.get('#password').setValue('')
+    vi.spyOn(btn, 'trigger')
     await btn.trigger('submit')
+    expect(view.find('#user-messages').text()).toEqual('User is required.')
+    expect(view.find('#password-messages').text()).toEqual('Pass is required.')
+  })
+  test('should fail when field pass is empty', async () => {
+    const btn = view.find('[data-test="submit"]')
+    await view.get('#user').setValue('calopsita')
+    await view.get('#password').setValue('')
     await btn.trigger('submit')
-    expect(view.find('#user-messages').text()).toBe('User is required.')
-    expect(view.find('#password-messages').text()).toBe('Pass is required.')
+    expect(view.find('#user-messages').text()).toEqual('')
+    expect(view.find('#password-messages').text()).toEqual('Pass is required.')
+  })
+  test('should fail when field user is empty', async () => {
+    const btn = view.find('[data-test="submit"]')
+    await view.get('#user').setValue('')
+    await view.get('#password').setValue('1234')
+    vi.spyOn(btn, 'trigger')
+    await btn.trigger('submit')
+    expect(view.find('#user-messages').text()).toEqual('User is required.')
+    expect(view.find('#password-messages').text()).toEqual('')
   })
 })
