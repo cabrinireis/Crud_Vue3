@@ -13,12 +13,12 @@ const vuetify = createVuetify({
 })
 global.ResizeObserver = require('resize-observer-polyfill')
 
-describe('HelloWorld', () => {
+describe('App', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   })
 
-  test.only('should notification success', async () => {
+  test('should notification success', async () => {
     const el = document.createElement('body')
     document.body.appendChild(el)
 
