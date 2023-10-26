@@ -11,7 +11,7 @@ const vuetify = createVuetify({
 })
 global.ResizeObserver = require('resize-observer-polyfill')
 
-describe('HelloWorld', () => {
+describe('Login', () => {
   let view = null as any
 
   beforeEach(() => {
