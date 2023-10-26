@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { susStore } from './stores'
-const store = susStore()
+import Notification from './components/Notification.vue'
 </script>
 
 <template>
@@ -21,16 +20,9 @@ const store = susStore()
     </v-app-bar>
 
     <v-main style="min-height: calc(100vh - 64px)">
-      <v-snackbar
-        width="auto"
-        v-model="store.notification.active"
-        :color="store.notification.type"
-        :timeout="2000"
-      >
-        {{ store.notification.text }}
-      </v-snackbar>
       <router-view />
     </v-main>
+    <notification />
   </v-layout>
 </template>
 
