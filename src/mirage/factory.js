@@ -11,16 +11,16 @@ const photoUrl = [
 export default {
   patient: Factory.extend({
     name() {
-      return faker.name.fullName()
+      return faker.person.fullName()
     },
     email() {
       return faker.internet.email()
     },
     phone() {
-      return faker.phone.number('(62)#####-####')
+      return faker.phone.number()
     },
     motherName() {
-      return faker.name.fullName()
+      return faker.person.fullName()
     },
     photo_url() {
       return photoUrl[ramdomNumber(4)]

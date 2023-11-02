@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import Notification from './components/Notification.vue'
+import router from './router'
+
+const logout = () => {
+  sessionStorage.clear()
+  router.push('/')
+}
 </script>
 
 <template>
@@ -15,7 +21,7 @@ import Notification from './components/Notification.vue'
       <v-spacer></v-spacer>
 
       <v-btn icon>
-        <v-icon>mdi-export</v-icon>
+        <v-icon @click="logout()">mdi-export</v-icon>
       </v-btn>
     </v-app-bar>
 
