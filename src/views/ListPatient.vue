@@ -113,7 +113,7 @@ watch(search, (value: string) => {
                 <v-progress-linear :indeterminate="onLoading"></v-progress-linear>
               </td>
             </tr>
-            <tr v-else v-for="(item, i) in list" :key="i">
+            <tr v-else v-for="(item, i) in list" :key="i" data-testid="row-table">
               <td>{{ item.name }}</td>
               <td>{{ item.motherName }}</td>
               <td>{{ item.phone }}</td>
