@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import axios from '@/plugins/axios'
 import router from '@/router/index'
 
 const setError = {
@@ -7,21 +7,8 @@ const setError = {
   text: 'Ocorreu um erro, tente novamente mais tarde.',
   type: 'error' as notyType
 }
-// axios.interceptors.response.use(
-//   function (response) {
-//     // Any status code that lie within the range of 2xx cause this function to trigger
-//     // Do something with response data
-//     return response
-//   },
-//   function () {
-//     const errorCustom = (susStore().$state.notification = setError)
-//     // Any status codes that falls outside the range of 2xx cause this function to trigger
-//     // Do something with response error
-//     return Promise.reject(errorCustom)
-//   }
-// )
 
-const url = '/api/patients'
+const entity = '/patients'
 type notyType = 'success' | 'info' | 'warning' | 'error' | undefined
 
 export const susStore = defineStore('sus', {
@@ -62,55 +49,47 @@ export const susStore = defineStore('sus', {
     isAuthenticated: false as boolean
   }),
   actions: {
+    setNotification() {
+      console.log('errr', setError)
+      this.notification = { ...setError }
+    },
     async login(value: { user: string; pass: string }) {
-      await axios
-        .post('/api/login', value)
-        .then((res) => {
-          if (res) {
-            router.push('/list')
-            this.user = value.user
-            this.isAuthenticated = true
-            sessionStorage.setItem('isAuthenticated', JSON.stringify(this.user))
-            this.notification = {
-              type: 'success',
-              active: true,
-              text: 'Seja bem vindo(a).'
-            }
+      await axios.post('/api/login', value).then((res) => {
+        if (res) {
+          router.push('/list')
+          this.user = value.user
+          this.isAuthenticated = true
+          sessionStorage.setItem('isAuthenticated', JSON.stringify(this.user))
+          this.notification = {
+            type: 'success',
+            active: true,
+            text: 'Seja bem vindo(a).'
           }
-        })
-        .catch(() => {
-          this.notification = { ...setError }
-        })
+        }
+      })
+      // .catch(() => {
+      //   this.notification = { ...setError }
+      // })
     },
     async getPatients() {
       this.loading = true
       await axios
-        .get(url, { params: { query: this.search } })
+        .get(entity, { params: { query: this.search } })
         .then(({ data }) => {
           this.patientList = data.response
-        })
-        .catch((error) => {
-          this.notification = { ...setError }
-          console.log(error)
         })
         .finally(() => {
           this.loading = false
         })
     },
     async getPatient(id: string) {
-      await axios
-        .get(`/api/patients/${id}`)
-        .then((res) => {
-          this.patient = res.data.patient
-        })
-        .catch((error) => {
-          this.notification = { ...setError }
-          console.log(error)
-        })
+      await axios.get(`${entity}/${id}`).then((res) => {
+        this.patient = res.data.patient
+      })
     },
     async createPatient(value: object) {
       await axios
-        .post('/api/patients/', value)
+        .post(entity, value)
         .then((res) => {
           if (res) {
             this.getPatients()
@@ -127,7 +106,7 @@ export const susStore = defineStore('sus', {
         })
     },
     async deletePatient(id: string) {
-      axios.delete(`/api/patients/${id}`).then((res) => {
+      axios.delete(`${entity}/${id}`).then((res) => {
         if (res) {
           this.getPatients()
           this.notification = {
@@ -137,28 +116,18 @@ export const susStore = defineStore('sus', {
           }
         }
       })
-      // .catch((error) => {
-      //   this.notification = { ...setError }
-      //   console.log(error)
-      // })
     },
     async updatePatient(value: object) {
-      await axios
-        .post(`/api/patients/${value.id}`, { params: value })
-        .then((res) => {
-          if (res) {
-            this.getPatients()
-            this.notification = {
-              type: 'success',
-              active: true,
-              text: 'Paciente editado com sucesso.'
-            }
+      await axios.post(`${entity}/${value.id}`, { params: value }).then((res) => {
+        if (res) {
+          this.getPatients()
+          this.notification = {
+            type: 'success',
+            active: true,
+            text: 'Paciente editado com sucesso.'
           }
-        })
-        .catch((error) => {
-          this.notification = { ...setError }
-          console.log(error)
-        })
+        }
+      })
     },
     async getCep(cep: string) {
       // axios not suport passthrough the miragejs
