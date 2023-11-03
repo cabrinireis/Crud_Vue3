@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import Notification from './components/Notification.vue'
+import Notification from './components/AppNotifications.vue'
 import router from './router'
 
 const logout = () => {

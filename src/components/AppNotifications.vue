@@ -17,7 +17,7 @@ import { susStore } from '@/stores/index'
 const store = susStore()
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .header {
   width: 100%;
 }
