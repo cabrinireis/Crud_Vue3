@@ -16,15 +16,3 @@
 import { susStore } from '@/stores/index'
 const store = susStore()
 </script>
-
-<style scoped>
-.header {
-  width: 100%;
-}
-.app-notification {
-  width: 300px;
-  display: flex;
-  right: 0;
-  position: absolute;
-}
-</style>

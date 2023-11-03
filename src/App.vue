@@ -31,15 +31,3 @@ const logout = () => {
     <notification />
   </v-layout>
 </template>
-
-<style>
-.header {
-  width: 100%;
-}
-.app-notification {
-  width: 300px;
-  display: flex;
-  right: 0;
-  position: absolute;
-}
-</style>
