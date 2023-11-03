@@ -67,9 +67,6 @@ export const susStore = defineStore('sus', {
           }
         }
       })
-      // .catch(() => {
-      //   this.notification = { ...setError }
-      // })
     },
     async getPatients() {
       this.loading = true
@@ -88,22 +85,16 @@ export const susStore = defineStore('sus', {
       })
     },
     async createPatient(value: object) {
-      await axios
-        .post(entity, value)
-        .then((res) => {
-          if (res) {
-            this.getPatients()
-            this.notification = {
-              type: 'success',
-              active: true,
-              text: 'Paciente adicionado com sucesso.'
-            }
+      await axios.post(entity, value).then((res) => {
+        if (res) {
+          this.getPatients()
+          this.notification = {
+            type: 'success',
+            active: true,
+            text: 'Paciente adicionado com sucesso.'
           }
-        })
-        .catch((error) => {
-          this.notification = { ...setError }
-          console.log(error)
-        })
+        }
+      })
     },
     async deletePatient(id: string) {
       axios.delete(`${entity}/${id}`).then((res) => {
